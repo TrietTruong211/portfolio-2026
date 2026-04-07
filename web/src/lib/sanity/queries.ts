@@ -1,5 +1,5 @@
 import { sanity } from './client'
-import type { Miscellaneous, About, Work, Experience, Skill } from '../../../types/index'
+import type { Miscellaneous, About, Work, Experience, Skill } from '../../types/index'
 
 export const getMiscellaneous = (): Promise<Miscellaneous | null> =>
   sanity.fetch<Miscellaneous | null>(

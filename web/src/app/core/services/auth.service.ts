@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { firstValueFrom } from 'rxjs'
 import { environment } from '../../../environments/environment'
-import type { ApiUser } from '../../types/index'
+import type { ApiUser } from '../../../types/index'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

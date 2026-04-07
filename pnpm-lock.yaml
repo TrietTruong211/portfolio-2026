@@ -41,9 +41,6 @@ importers:
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
-      drizzle-orm:
-        specifier: ^0.38.0
-        version: 0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)
       fastify:
         specifier: ^5.0.0
         version: 5.8.4

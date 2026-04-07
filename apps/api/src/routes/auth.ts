@@ -1,7 +1,6 @@
 import type { FastifyPluginAsync } from 'fastify'
-import { db, schema } from '@portfolio/db'
-import { eq } from 'drizzle-orm'
-import { compare, hash } from 'bcryptjs'
+import { db, schema, eq } from '@portfolio/db'
+import { compare } from 'bcryptjs'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../lib/jwt.js'
 
 const loginBody = {

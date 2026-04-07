@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync } from 'fastify'
 import { db, schema, eq } from '../db/index.js'
-import { compare } from 'bcryptjs'
+import bcrypt from 'bcrypt'
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../lib/jwt.js'
 
 const loginBody = {
@@ -28,7 +28,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
     const [user] = await db.select().from(schema.users).where(eq(schema.users.email, email))
     if (!user) return reply.code(401).send({ error: 'Invalid credentials' })
 
-    const valid = await compare(password, user.passwordHash)
+    const valid = await bcrypt.compare(password, user.passwordHash)
     if (!valid) return reply.code(401).send({ error: 'Invalid credentials' })
 
     return reply

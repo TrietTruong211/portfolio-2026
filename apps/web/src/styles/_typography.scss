@@ -1,0 +1,62 @@
+// Rich text / Portable Text prose styles.
+// Import with: @use 'typography' as t;
+
+@mixin prose {
+  @apply text-base leading-relaxed text-foreground;
+
+  h2 {
+    @apply text-2xl font-semibold mt-8 mb-3 text-foreground;
+  }
+
+  h3 {
+    @apply text-xl font-medium mt-6 mb-2 text-foreground;
+  }
+
+  p {
+    @apply mb-4 text-muted-foreground;
+  }
+
+  a {
+    @apply text-primary underline underline-offset-4 hover:text-primary/80 transition-colors;
+  }
+
+  ul {
+    @apply list-disc pl-6 mb-4 space-y-1 text-muted-foreground;
+  }
+
+  ol {
+    @apply list-decimal pl-6 mb-4 space-y-1 text-muted-foreground;
+  }
+
+  li {
+    @apply leading-relaxed;
+  }
+
+  code {
+    @apply rounded bg-muted px-1 py-0.5 text-sm font-mono text-foreground;
+  }
+
+  pre {
+    @apply rounded-lg bg-muted p-4 overflow-x-auto text-sm font-mono mb-4;
+
+    code {
+      @apply bg-transparent p-0;
+    }
+  }
+
+  blockquote {
+    @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4;
+  }
+
+  hr {
+    @apply border-border my-8;
+  }
+
+  strong {
+    @apply font-semibold text-foreground;
+  }
+
+  em {
+    @apply italic;
+  }
+}

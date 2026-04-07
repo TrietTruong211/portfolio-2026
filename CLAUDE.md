@@ -166,7 +166,7 @@ Use Angular Signals for all state. Use computed() for derived state. Use effect(
 4. Lazy-load every route except the homepage
 5. No third-party scripts in <head> without async or defer
 6. Fonts: self-hosted via @fontsource — no Google Fonts runtime requests
-7. Initial bundle target: < 150KB gzipped — check with ng build --stats-json
+7. Initial bundle target: < 150KB gzipped (< 350KB raw) — check estimated transfer size in ng build output
 8. Use track in all @for loops
 
 ## SEO rules (enforce always)

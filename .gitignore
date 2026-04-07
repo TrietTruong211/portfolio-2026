@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build output
+apps/web/dist/
+apps/web/.angular/
+apps/api/dist/
+packages/*/dist/
+
+# Test artifacts
+apps/web/playwright-report/
+apps/web/test-results/
+coverage/
+*.lcov
+
+# Angular
+apps/web/.angular/
+
+# TypeScript
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Misc
+.vercel

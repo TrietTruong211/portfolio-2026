@@ -122,10 +122,97 @@ if (initial > 150 * 1024) process.exit(1);
 
 ---
 
-## /db-reset
-Usage: /db-reset (UAT only -- never production)
+## /db-generate
+Usage: /db-generate
+
+Generate a new migration from the current schema state. Run this after any schema change in `packages/db/src/schema/`.
 
 ```bash
 pnpm --filter db generate
+```
+
+Drizzle will diff the schema against the last migration snapshot and write a new SQL file to `packages/db/migrations/`. Review the generated SQL before migrating.
+
+---
+
+## /db-migrate
+Usage: /db-migrate
+
+Apply all pending migrations to the database pointed at by `DATABASE_URL` in `apps/api/.env`.
+
+```bash
 pnpm --filter db migrate
 ```
+
+**Never run against production without reviewing the generated SQL first.**
+
+---
+
+## /db-studio
+Usage: /db-studio
+
+Open Drizzle Studio — a local browser UI to inspect and edit the database.
+
+```bash
+pnpm --filter db studio
+```
+
+Requires `DATABASE_URL` to be set. Studio runs at https://local.drizzle.studio.
+
+---
+
+## /db-push
+Usage: /db-push (dev/UAT only — never production)
+
+Push schema changes directly to the database without generating a migration file. Useful during early development when you don't want to accumulate migration files.
+
+```bash
+pnpm --filter db -- drizzle-kit push
+```
+
+**Do not use on production.** For prod, always use `/db-generate` then `/db-migrate`.
+
+---
+
+## /db-status
+Usage: /db-status
+
+Show which migrations have been applied and which are pending.
+
+```bash
+pnpm --filter db -- drizzle-kit status
+```
+
+---
+
+## /db-drop
+Usage: /db-drop (dev/UAT only — never production)
+
+Drop all tables and reapply all migrations from scratch. Use when you need a clean slate in dev.
+
+Steps:
+1. Confirm we are NOT on a production `DATABASE_URL` (check `apps/api/.env`)
+2. Run:
+```bash
+pnpm --filter db -- drizzle-kit drop
+```
+3. Then re-migrate:
+```bash
+pnpm --filter db migrate
+```
+
+---
+
+## /db-new-table
+Usage: /db-new-table <name>
+
+Add a new Drizzle table to the schema.
+
+Steps:
+1. Create `packages/db/src/schema/<name>.ts` using `pgTable` from `drizzle-orm/pg-core`
+2. Always include `id` (uuid, primaryKey, defaultRandom), `created_at`, and `updated_at` columns with `.defaultNow().notNull()`
+3. Export from `packages/db/src/schema/index.ts`
+4. Export from `packages/db/src/index.ts` if the table needs to be used by the API
+5. Run `/db-generate` to create the migration
+6. Review the generated SQL
+7. Run `/db-migrate` to apply

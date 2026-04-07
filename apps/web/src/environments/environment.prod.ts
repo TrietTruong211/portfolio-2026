@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.yourdomain.com',
-  sanityProjectId: '',
+  apiUrl: 'http://localhost:3001',
+  sanityProjectId: '8kchh4m0',
   sanityDataset: 'production',
 }

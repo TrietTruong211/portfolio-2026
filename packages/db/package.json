@@ -2,13 +2,14 @@
   "name": "@portfolio/db",
   "version": "0.0.0",
   "private": true,
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "exports": {
-    ".": "./src/index.ts",
-    "./schema": "./src/schema/index.ts",
-    "./schema/*": "./src/schema/*.ts"
+    ".": "./dist/index.js",
+    "./schema": "./dist/schema/index.js",
+    "./schema/*": "./dist/schema/*.js"
   },
   "scripts": {
+    "build": "tsc",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
     "studio": "drizzle-kit studio",

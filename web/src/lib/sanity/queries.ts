@@ -1,5 +1,5 @@
 import { sanity } from './client'
-import type { Miscellaneous, About, Work, Experience, Skill } from '../../types/index'
+import type { Miscellaneous, About, Work, Experience, Skill, Testimonial, Brand, FooterInfo } from '../../types/index'
 
 export const getMiscellaneous = (): Promise<Miscellaneous | null> =>
   sanity.fetch<Miscellaneous | null>(
@@ -35,13 +35,14 @@ export const getWorks = (): Promise<Work[]> =>
 
 export const getExperiences = (): Promise<Experience[]> =>
   sanity.fetch<Experience[]>(
-    `*[_type == "experiences"] | order(year desc) {
+    `*[_type == "experiences"] {
       year,
-      "works": works[]-> {
-        name,
-        company,
-        desc
-      }
+      works[] { name, company, desc },
+      "startYear":  string::split(string::split(year, " - ")[0], "/")[1],
+      "startMonth": string::split(string::split(year, " - ")[0], "/")[0]
+    } | order(startYear desc, startMonth desc) {
+      year,
+      works
     }`
   )
 
@@ -51,5 +52,32 @@ export const getSkills = (): Promise<Skill[]> =>
       name,
       bgColor,
       "icon": icon.asset->url
+    }`
+  )
+
+export const getTestimonials = (): Promise<Testimonial[]> =>
+  sanity.fetch<Testimonial[]>(
+    `*[_type == "testimonials"] {
+      feedback,
+      name,
+      company,
+      "imgUrl": imgurl.asset->url
+    }`
+  )
+
+export const getBrands = (): Promise<Brand[]> =>
+  sanity.fetch<Brand[]>(
+    `*[_type == "brands"] {
+      name,
+      url,
+      "imgUrl": imgUrl.asset->url
+    }`
+  )
+
+export const getFooterInfo = (): Promise<FooterInfo | null> =>
+  sanity.fetch<FooterInfo | null>(
+    `*[_type == "footer"][0] {
+      email,
+      phoneNumber
     }`
   )

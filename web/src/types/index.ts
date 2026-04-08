@@ -46,6 +46,24 @@ export type Skill = {
   icon: string | null
 }
 
+export type Testimonial = {
+  feedback: string
+  name: string
+  company: string
+  imgUrl: string | null
+}
+
+export type Brand = {
+  name: string
+  imgUrl: string | null
+  url: string | null
+}
+
+export type FooterInfo = {
+  email: string | null
+  phoneNumber: string | null
+}
+
 export type ContactFormData = {
   name: string
   email: string
@@ -54,5 +72,5 @@ export type ContactFormData = {
 
 export type ApiUser = {
   id: string
-  role: 'owner'
+  role: 'user' | 'admin'
 }

@@ -9,57 +9,91 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  test-api:
+    name: API — typecheck & test
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    environment: uat
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: api
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: npm
+          cache-dependency-path: api/package-lock.json
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Type check
-        run: pnpm typecheck
+        run: npm run typecheck
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: API tests
-        run: pnpm --filter api test
+      - name: Tests
+        run: npm test
         env:
           DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
           NODE_ENV: test
 
-      - name: Deploy API to Railway (UAT)
+  deploy-api:
+    name: Deploy API → Railway (UAT)
+    needs: test-api
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: uat
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Railway
         uses: bervProject/railway-deploy@main
         with:
           railway_token: ${{ secrets.RAILWAY_TOKEN }}
           service: ${{ secrets.RAILWAY_UAT_SERVICE_ID }}
 
-      - name: Build Angular (UAT)
-        run: pnpm --filter web build:uat
+  deploy-web:
+    name: Build & Deploy Web → Vercel (UAT)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: uat
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (UAT)
+        run: npm run build:uat
         env:
           SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
           SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}
 
-      - name: Deploy to Vercel (UAT)
+      - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
-          working-directory: apps/web
+          working-directory: web

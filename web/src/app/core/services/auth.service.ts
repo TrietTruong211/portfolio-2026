@@ -9,9 +9,9 @@ export class AuthService {
   private readonly http = inject(HttpClient)
 
   private readonly _user = signal<ApiUser | null>(null)
-  readonly user = this._user.asReadonly()
+  readonly user            = this._user.asReadonly()
   readonly isAuthenticated = computed(() => this._user() !== null)
-  readonly isOwner = computed(() => this._user()?.role === 'owner')
+  readonly isAdmin         = computed(() => this._user()?.role === 'admin')
 
   async checkSession(): Promise<void> {
     try {
@@ -22,6 +22,13 @@ export class AuthService {
     } catch {
       this._user.set(null)
     }
+  }
+
+  async register(email: string, password: string): Promise<void> {
+    await firstValueFrom(
+      this.http.post(`${environment.apiUrl}/auth/register`, { email, password }, { withCredentials: true })
+    )
+    await this.checkSession()
   }
 
   async login(email: string, password: string): Promise<void> {

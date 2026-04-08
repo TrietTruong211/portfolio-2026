@@ -13,6 +13,11 @@ export const routes: Routes = [
     title: 'Projects — Your Name',
   },
   {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent),
+    title: 'Sign In',
+  },
+  {
     path: 'admin',
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
     canActivate: [authGuard],

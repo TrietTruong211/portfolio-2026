@@ -7,7 +7,17 @@ const loginBody = {
   type: 'object',
   required: ['email', 'password'],
   properties: {
-    email: { type: 'string', format: 'email' },
+    email:    { type: 'string', format: 'email' },
+    password: { type: 'string', minLength: 8 },
+  },
+  additionalProperties: false,
+} as const
+
+const registerBody = {
+  type: 'object',
+  required: ['email', 'password'],
+  properties: {
+    email:    { type: 'string', format: 'email' },
     password: { type: 'string', minLength: 8 },
   },
   additionalProperties: false,
@@ -22,6 +32,29 @@ const cookieOpts = (maxAge: number) => ({
 })
 
 export const authRoutes: FastifyPluginAsync = async (app) => {
+
+  app.post('/register', { schema: { body: registerBody } }, async (request, reply) => {
+    const { email, password } = request.body as { email: string; password: string }
+
+    const [existing] = await db.select({ id: schema.users.id })
+      .from(schema.users)
+      .where(eq(schema.users.email, email))
+    if (existing) return reply.code(409).send({ error: 'Email already registered' })
+
+    const passwordHash = await bcrypt.hash(password, 12)
+    const [user] = await db.insert(schema.users)
+      .values({ email, passwordHash, role: 'user' })
+      .returning()
+
+    if (!user) return reply.code(500).send({ error: 'Failed to create account' })
+
+    return reply
+      .setCookie('portfolio_access',  signAccessToken({ id: user.id, role: user.role }),  cookieOpts(60 * 15))
+      .setCookie('portfolio_refresh', signRefreshToken({ id: user.id }), cookieOpts(60 * 60 * 24 * 7))
+      .code(201)
+      .send({ ok: true })
+  })
+
   app.post('/login', { schema: { body: loginBody } }, async (request, reply) => {
     const { email, password } = request.body as { email: string; password: string }
 
@@ -32,14 +65,14 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
     if (!valid) return reply.code(401).send({ error: 'Invalid credentials' })
 
     return reply
-      .setCookie('portfolio_access', signAccessToken({ id: user.id, role: 'owner' }), cookieOpts(60 * 15))
+      .setCookie('portfolio_access',  signAccessToken({ id: user.id, role: user.role }),  cookieOpts(60 * 15))
       .setCookie('portfolio_refresh', signRefreshToken({ id: user.id }), cookieOpts(60 * 60 * 24 * 7))
       .send({ ok: true })
   })
 
   app.post('/logout', async (_request, reply) => {
     return reply
-      .clearCookie('portfolio_access', { path: '/' })
+      .clearCookie('portfolio_access',  { path: '/' })
       .clearCookie('portfolio_refresh', { path: '/' })
       .send({ ok: true })
   })
@@ -54,7 +87,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
       if (!user) return reply.code(401).send({ error: 'User not found' })
 
       return reply
-        .setCookie('portfolio_access', signAccessToken({ id: user.id, role: 'owner' }), cookieOpts(60 * 15))
+        .setCookie('portfolio_access', signAccessToken({ id: user.id, role: user.role }), cookieOpts(60 * 15))
         .send({ ok: true })
     } catch {
       return reply.code(401).send({ error: 'Invalid refresh token' })

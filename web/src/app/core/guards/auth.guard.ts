@@ -9,7 +9,7 @@ export const authGuard: CanActivateFn = async () => {
 
   await auth.checkSession()
 
-  if (!auth.isOwner()) {
+  if (!auth.isAdmin()) {
     return router.createUrlTree(['/'])
   }
   return true

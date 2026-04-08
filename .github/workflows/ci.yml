@@ -9,52 +9,82 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
+  api:
+    name: API — typecheck & test
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: api
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: npm
+          cache-dependency-path: api/package-lock.json
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Type check
-        run: pnpm typecheck
+        run: npm run typecheck
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: API tests (JEST)
-        run: pnpm --filter api test --coverage
+      - name: Tests
+        run: npm test -- --coverage
         env:
           DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
           NODE_ENV: test
 
-      - name: Angular unit tests
-        run: pnpm --filter web test -- --watch=false --browsers=ChromeHeadless --code-coverage
+      - name: Upload API coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage-${{ github.run_id }}
+          path: api/coverage/
+          retention-days: 7
 
-      - name: Build web (static export)
-        run: pnpm --filter web build
+  web:
+    name: Web — typecheck, lint & build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (production)
+        run: npm run build:prod
         env:
           SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}
 
       - name: Install Playwright browsers
-        run: pnpm --filter web exec playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Playwright E2E + axe
-        run: pnpm --filter web e2e --project=chromium
+        run: npm run e2e -- --project=chromium
         env:
           E2E_BASE_URL: http://localhost:4200
 
@@ -63,15 +93,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ github.run_id }}
-          path: apps/web/playwright-report/
-          retention-days: 7
-
-      - name: Upload coverage reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-${{ github.run_id }}
-          path: |
-            apps/web/coverage/
-            apps/api/coverage/
+          path: web/playwright-report/
           retention-days: 7

@@ -8,28 +8,48 @@ import type { About } from '../../../../types/index'
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgOptimizedImage],
   template: `
-    <section aria-labelledby="about-heading" class="py-16">
-      <h2 id="about-heading" class="mb-10 text-3xl font-bold text-foreground">About Me</h2>
+    <section id="about" aria-labelledby="about-heading" class="py-24">
 
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mb-12">
+        <p class="font-mono text-sm text-primary mb-2">// about_me()</p>
+        <h2 id="about-heading" class="section-heading">About Me</h2>
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         @for (item of items(); track item.title) {
-          <article class="flex flex-col gap-4 rounded-lg border border-border bg-card p-6">
+          <article
+            class="group relative flex flex-col gap-4 rounded-xl border border-border
+                   bg-card p-6 card-hover"
+          >
+            <!-- Top accent line -->
+            <div
+              class="absolute top-0 left-6 right-6 h-px
+                     bg-gradient-to-r from-transparent via-primary/50 to-transparent
+                     opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              aria-hidden="true"
+            ></div>
+
             @if (item.imgUrl) {
-              <img
-                [ngSrc]="item.imgUrl"
-                [alt]="item.title"
-                width="48"
-                height="48"
-                class="object-contain"
-              />
+              <div class="flex h-12 w-12 items-center justify-center rounded-lg
+                          bg-primary/10 border border-primary/20">
+                <img
+                  [ngSrc]="item.imgUrl"
+                  [alt]="item.title"
+                  width="28"
+                  height="28"
+                  class="object-contain"
+                />
+              </div>
             }
-            <h3 class="text-lg font-semibold text-foreground">{{ item.title }}</h3>
+
+            <h3 class="text-base font-semibold text-foreground">{{ item.title }}</h3>
             <p class="text-sm text-muted-foreground leading-relaxed">{{ item.description }}</p>
           </article>
         } @empty {
-          <p class="text-muted-foreground">No about items yet.</p>
+          <p class="text-muted-foreground col-span-3">No about items yet.</p>
         }
       </div>
+
     </section>
   `,
 })

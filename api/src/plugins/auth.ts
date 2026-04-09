@@ -21,12 +21,12 @@ const authPlugin: FastifyPluginAsync = fp(async (app) => {
 
 export { authPlugin }
 
-export function requireOwner(
+export function requireAdmin(
   request: FastifyRequest,
   reply: FastifyReply,
   done: () => void
 ): void {
-  if (!request.user || request.user.role !== 'owner') {
+  if (!request.user || request.user.role !== 'admin') {
     reply.code(403).send({ error: 'Forbidden' })
     return
   }

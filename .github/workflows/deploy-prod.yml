@@ -13,6 +13,7 @@ jobs:
     name: API — typecheck & test
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment: production
     defaults:
       run:
         working-directory: api
@@ -22,7 +23,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: api/package-lock.json
 
@@ -35,26 +36,10 @@ jobs:
       - name: Tests
         run: npm test
         env:
-          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
           NODE_ENV: test
-
-  deploy-api:
-    name: Deploy API → Railway (Prod)
-    needs: test-api
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    environment: production
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Railway
-        uses: bervProject/railway-deploy@main
-        with:
-          railway_token: ${{ secrets.RAILWAY_TOKEN }}
-          service: ${{ secrets.RAILWAY_PROD_SERVICE_ID }}
 
   deploy-web:
     name: Build & Deploy Web → S3 + CloudFront (Prod)
@@ -70,7 +55,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: web/package-lock.json
 

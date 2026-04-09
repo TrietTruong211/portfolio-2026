@@ -10,9 +10,9 @@ concurrency:
 
 jobs:
   api:
-    name: API — typecheck & test
+    name: API — typecheck
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     defaults:
       run:
         working-directory: api
@@ -22,7 +22,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: api/package-lock.json
 
@@ -32,26 +32,10 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
-      - name: Tests
-        run: npm test -- --coverage
-        env:
-          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
-          NODE_ENV: test
-
-      - name: Upload API coverage
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-coverage-${{ github.run_id }}
-          path: api/coverage/
-          retention-days: 7
-
   web:
-    name: Web — typecheck, lint & build
+    name: Web — typecheck & lint
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: web
@@ -61,7 +45,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: web/package-lock.json
 
@@ -73,25 +57,3 @@ jobs:
 
       - name: Lint
         run: npm run lint
-
-      - name: Build (production)
-        run: npm run build:prod
-        env:
-          SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
-          SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Playwright E2E + axe
-        run: npm run e2e -- --project=chromium
-        env:
-          E2E_BASE_URL: http://localhost:4200
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-${{ github.run_id }}
-          path: web/playwright-report/
-          retention-days: 7

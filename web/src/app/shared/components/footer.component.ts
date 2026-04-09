@@ -213,7 +213,7 @@ type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
                     <circle cx="12" cy="10" r="3"/>
                   </svg>
                 </span>
-                <span class="text-sm">Melbourne, Australia</span>
+                <span class="text-sm">Australia</span>
               </div>
             </div>
 

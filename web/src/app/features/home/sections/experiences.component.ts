@@ -74,7 +74,7 @@ import type { Experience } from '../../../../types/index'
                           <span class="text-sm text-primary/80 font-medium">&#64; {{ work.company }}</span>
                         }
                       </div>
-                      <p class="text-sm text-muted-foreground leading-relaxed">{{ work.desc }}</p>
+                      <p class="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{{ work.desc }}</p>
                     </article>
                   }
                 </div>

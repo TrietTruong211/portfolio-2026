@@ -95,15 +95,15 @@ import type { Miscellaneous } from '../../../../types/index'
             <div class="relative shrink-0" aria-hidden="true">
               <!-- Glow ring -->
               <div class="absolute inset-0 rounded-full"
-                   style="background: conic-gradient(from 0deg, hsl(15 90% 59%), hsl(220 36% 20%), hsl(15 90% 59%));
+                   style="background: conic-gradient(from 0deg, hsl(var(--primary)), hsl(var(--card)), hsl(var(--primary)));
                           padding: 3px; border-radius: 9999px;">
                 <div class="h-full w-full rounded-full"
-                     style="background: hsl(220 41% 10%)"></div>
+                     style="background: hsl(var(--background))"></div>
               </div>
               <div class="relative rounded-full overflow-hidden
                           h-56 w-56 sm:h-64 sm:w-64 lg:h-72 lg:w-72
                           ring-2 ring-primary/40 ring-offset-4 ring-offset-background"
-                   style="box-shadow: 0 0 60px hsl(15 90% 59% / 0.15)">
+                   style="box-shadow: 0 0 60px hsl(var(--primary) / 0.15)">
                 <img
                   [ngSrc]="data()!.profileImage!"
                   [alt]="'Profile photo of ' + data()?.name"

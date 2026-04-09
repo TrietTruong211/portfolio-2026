@@ -36,7 +36,7 @@ jobs:
       - name: Tests
         run: npm test
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ vars.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
           NODE_ENV: test
@@ -84,7 +84,7 @@ jobs:
       # Hashed assets (JS/CSS/fonts/images) — immutable, 1-year cache
       - name: Sync immutable assets to S3
         run: |
-          aws s3 sync dist/web/browser s3://${{ secrets.S3_BUCKET }} \
+          aws s3 sync dist/web/browser s3://${{ vars.S3_BUCKET }} \
             --delete \
             --cache-control "public,max-age=31536000,immutable" \
             --exclude "*.html" \
@@ -93,7 +93,7 @@ jobs:
       # HTML + JSON — always revalidate so users get fresh prerendered pages
       - name: Sync HTML and JSON to S3
         run: |
-          aws s3 sync dist/web/browser s3://${{ secrets.S3_BUCKET }} \
+          aws s3 sync dist/web/browser s3://${{ vars.S3_BUCKET }} \
             --cache-control "public,max-age=0,must-revalidate" \
             --include "*.html" \
             --include "*.json"
@@ -101,5 +101,5 @@ jobs:
       - name: Invalidate CloudFront
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"

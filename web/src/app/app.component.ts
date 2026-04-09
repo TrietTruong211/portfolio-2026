@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core'
+import type { OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router'
 import { LiveAnnouncer } from '@angular/cdk/a11y'
 import { Title } from '@angular/platform-browser'

@@ -1,8 +1,9 @@
+import type {
+  OnInit} from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnInit,
   signal,
   PLATFORM_ID,
 } from '@angular/core'
@@ -287,9 +288,8 @@ export class FooterComponent implements OnInit {
   readonly footerInfo = signal<FooterInfo | null>(null)
   readonly year = new Date().getFullYear()
 
-  async ngOnInit(): Promise<void> {
-    const info = await getFooterInfo()
-    this.footerInfo.set(info)
+  ngOnInit(): void {
+    void getFooterInfo().then(info => { this.footerInfo.set(info) })
   }
 
   form: ContactFormData = { name: '', email: '', message: '' }

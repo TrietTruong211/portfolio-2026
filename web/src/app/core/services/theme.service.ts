@@ -9,7 +9,7 @@ export type ThemePreset = {
   vars: Record<string, string>
 }
 
-export const THEME_PRESETS: ThemePreset[] = [
+export const THEME_PRESETS: [ThemePreset, ...ThemePreset[]] = [
   // ── Dark themes ──────────────────────────────────────────────
   {
     id: 'ember', label: 'Ember', dark: true, swatch: '#f46737',
@@ -142,7 +142,7 @@ export class ThemeService {
   private readonly doc        = inject(DOCUMENT)
   private readonly platformId = inject(PLATFORM_ID)
 
-  readonly activePresetId = signal<string>(DEFAULT_ID)
+  readonly activePresetId = signal(DEFAULT_ID)
 
   constructor() {
     if (!isPlatformBrowser(this.platformId)) return
@@ -158,7 +158,7 @@ export class ThemeService {
   }
 
   private apply(id: string): void {
-    const preset = THEME_PRESETS.find(p => p.id === id) ?? THEME_PRESETS[0]!
+    const preset = THEME_PRESETS.find(p => p.id === id) ?? THEME_PRESETS[0]
     const root   = this.doc.documentElement
 
     for (const [prop, value] of Object.entries(preset.vars)) {

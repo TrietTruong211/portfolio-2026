@@ -1,9 +1,10 @@
+import type {
+  OnInit} from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   makeStateKey,
-  OnInit,
   PLATFORM_ID,
   signal,
   TransferState,
@@ -83,7 +84,11 @@ export class HomeComponent implements OnInit {
   readonly testimonials = signal<Testimonial[]>([])
   readonly brands      = signal<Brand[]>([])
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+    void this.init()
+  }
+
+  private async init(): Promise<void> {
     // On the client, rehydrate from TransferState instead of re-fetching.
     if (isPlatformBrowser(this.platformId)) {
       const miscData        = this.state.get(MISC_KEY, null)
@@ -119,13 +124,13 @@ export class HomeComponent implements OnInit {
         getBrands(),
       ] as const)
 
-    const miscData        = misc.status         === 'fulfilled' ? misc.value         : null
-    const aboutsData      = abouts.status       === 'fulfilled' ? (abouts.value      ?? []) : []
-    const skillsData      = skills.status       === 'fulfilled' ? (skills.value      ?? []) : []
-    const worksData       = works.status        === 'fulfilled' ? (works.value       ?? []) : []
-    const experiencesData = experiences.status  === 'fulfilled' ? (experiences.value ?? []) : []
-    const testimonialsData = testimonials.status === 'fulfilled' ? (testimonials.value ?? []) : []
-    const brandsData      = brands.status       === 'fulfilled' ? (brands.value      ?? []) : []
+    const miscData        = misc.status          === 'fulfilled' ? misc.value          : null
+    const aboutsData      = abouts.status        === 'fulfilled' ? abouts.value        : []
+    const skillsData      = skills.status        === 'fulfilled' ? skills.value        : []
+    const worksData       = works.status         === 'fulfilled' ? works.value         : []
+    const experiencesData = experiences.status   === 'fulfilled' ? experiences.value   : []
+    const testimonialsData = testimonials.status === 'fulfilled' ? testimonials.value  : []
+    const brandsData      = brands.status        === 'fulfilled' ? brands.value        : []
 
     this.misc.set(miscData)
     this.abouts.set(aboutsData)

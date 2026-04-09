@@ -1,7 +1,8 @@
+import type {
+  ElementRef} from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   HostListener,
   inject,
   PLATFORM_ID,
@@ -245,7 +246,7 @@ export class HeaderComponent {
   @HostListener('document:click', ['$event'])
   onDocClick(event: MouseEvent): void {
     if (!this.pickerOpen()) return
-    if (!this.pickerRef?.nativeElement.contains(event.target as Node)) {
+    if (!this.pickerRef.nativeElement.contains(event.target as Node)) {
       this.pickerOpen.set(false)
     }
   }

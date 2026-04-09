@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal, ElementRef, ViewChild } from '@angular/core'
+import type { ElementRef} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal, ViewChild } from '@angular/core'
 import type { Work } from '../../../../types/index'
 
 const PAGE_SIZE = 6
@@ -268,6 +269,6 @@ export class WorksComponent {
   goTo(page: number): void {
     const clamped = Math.max(1, Math.min(page, this.totalPages()))
     this.currentPage.set(clamped)
-    this.sectionEl?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    this.sectionEl.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }

@@ -1,14 +1,14 @@
-import {
+import type {
   AfterViewInit,
+  ElementRef,
+  OnDestroy,
+  QueryList} from '@angular/core';
+import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   inject,
   input,
-  OnDestroy,
-  OnInit,
   PLATFORM_ID,
-  QueryList,
   ViewChild,
   ViewChildren,
 } from '@angular/core'
@@ -89,7 +89,7 @@ import type { Experience } from '../../../../types/index'
     </section>
   `,
 })
-export class ExperiencesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ExperiencesComponent implements AfterViewInit, OnDestroy {
   readonly items = input<Experience[]>([])
 
   @ViewChild('sectionEl') sectionEl!: ElementRef<HTMLElement>
@@ -99,10 +99,6 @@ export class ExperiencesComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID)
   private ioObserver:  IntersectionObserver | null = null
   private scrollBound: (() => void) | null = null
-
-  ngOnInit(): void {
-    console.log('[Experiences] items:', JSON.stringify(this.items(), null, 2))
-  }
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return
@@ -125,16 +121,15 @@ export class ExperiencesComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     observeAll()
-    this.tlEntries.changes.subscribe(() => observeAll())
+    this.tlEntries.changes.subscribe(() => { observeAll(); })
 
     this.scrollBound = (): void => {
-      const section = this.sectionEl?.nativeElement
-      const line    = this.lineEl?.nativeElement
-      if (!section || !line) return
+      const section = this.sectionEl.nativeElement
+      const line    = this.lineEl.nativeElement
       const rect     = section.getBoundingClientRect()
       const winH     = window.innerHeight
       const progress = Math.max(0, Math.min(1, (winH - rect.top) / (rect.height + winH)))
-      line.style.transform = `scaleY(${progress})`
+      line.style.transform = `scaleY(${String(progress)})`
     }
 
     window.addEventListener('scroll', this.scrollBound, { passive: true })

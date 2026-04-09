@@ -184,7 +184,7 @@ export class LoginComponent {
       }
       await this.router.navigate(['/'])
     } catch (err: unknown) {
-      const msg = (err as { error?: { error?: string } })?.error?.error
+      const msg = (err as { error?: { error?: string } }).error?.error
       this.error.set(msg ?? (this.tab() === 'login' ? 'Invalid email or password.' : 'Could not create account.'))
     } finally {
       this.loading.set(false)

@@ -2,6 +2,7 @@
   "name": "portfolio-web",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -12,7 +13,8 @@
     "test": "ng test",
     "e2e": "playwright test",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "lint": "eslint src",
+    "lint": "eslint src e2e",
+    "lint:fix": "eslint src e2e --fix",
     "clean": "rm -rf dist .angular"
   },
   "dependencies": {

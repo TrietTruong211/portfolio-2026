@@ -39,8 +39,14 @@ export default tseslint.config(
   {
     ...playwright.configs['flat/recommended'],
     files: ['e2e/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
   },
   {
-    ignores: ['dist/**', '.angular/**', 'coverage/**'],
+    ignores: ['dist/**', '.angular/**', 'coverage/**', 'src/index.html', 'src/app/app.component.html'],
   }
 )

@@ -2,7 +2,7 @@ import type { FastifyPluginAsync } from 'fastify'
 import multipart from '@fastify/multipart'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { randomUUID } from 'crypto'
-import { requireOwner } from '../plugins/auth.js'
+import { requireAdmin } from '../plugins/auth.js'
 import { proxyToAws } from '../lib/aws.js'
 import type { DocumentQueryRequest } from '../types/index.js'
 
@@ -30,7 +30,7 @@ export const documentRoutes: FastifyPluginAsync = async (app) => {
 
   const s3 = new S3Client({ region: process.env['AWS_REGION'] ?? 'ap-southeast-2' })
 
-  app.post('/documents/upload', { preHandler: requireOwner }, async (request, reply) => {
+  app.post('/documents/upload', { preHandler: requireAdmin }, async (request, reply) => {
     const data = await request.file()
     if (!data) return reply.code(400).send({ error: 'No file provided' })
 
@@ -57,7 +57,7 @@ export const documentRoutes: FastifyPluginAsync = async (app) => {
     }
   })
 
-  app.post('/documents/query', { preHandler: requireOwner, schema: { body: queryBodySchema } }, async (request, reply) => {
+  app.post('/documents/query', { preHandler: requireAdmin, schema: { body: queryBodySchema } }, async (request, reply) => {
     const body = request.body as DocumentQueryRequest
 
     try {

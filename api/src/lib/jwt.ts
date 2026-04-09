@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 
 export type JwtPayload = {
   id: string
-  role: 'owner'
+  role: string
 }
 
 type RefreshPayload = {

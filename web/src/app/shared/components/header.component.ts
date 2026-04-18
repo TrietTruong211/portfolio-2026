@@ -21,6 +21,7 @@ import { AuthService } from '../../core/services/auth.service'
   imports: [RouterLink, NgTemplateOutlet],
   template: `
     <header
+      #headerRef
       class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       [class.scrolled]="scrolled()"
     >
@@ -36,9 +37,10 @@ import { AuthService } from '../../core/services/auth.service'
             &lt;CM /&gt;
           </a>
 
-          <div class="flex items-center gap-1 sm:gap-2">
-            <!-- Nav links -->
-            <ul class="flex items-center gap-1 sm:gap-2" role="list">
+          <div class="flex items-center gap-2">
+
+            <!-- Desktop: Nav links -->
+            <ul class="hidden md:flex items-center gap-1 sm:gap-2" role="list">
               @for (link of navLinks; track link.label) {
                 <li>
                   <a
@@ -58,12 +60,12 @@ import { AuthService } from '../../core/services/auth.service'
               }
             </ul>
 
-            <!-- Auth button -->
+            <!-- Desktop: Auth button -->
             @if (currentUser()) {
               <button
                 type="button"
                 (click)="logout()"
-                class="flex h-8 items-center gap-2 rounded-lg border border-border
+                class="hidden md:flex h-8 items-center gap-2 rounded-lg border border-border
                        bg-card px-3 text-xs font-medium text-muted-foreground
                        transition-colors hover:border-primary/50 hover:text-foreground
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -77,7 +79,7 @@ import { AuthService } from '../../core/services/auth.service'
             } @else {
               <a
                 routerLink="/login"
-                class="flex h-8 items-center gap-1.5 rounded-lg border border-border
+                class="hidden md:flex h-8 items-center gap-1.5 rounded-lg border border-border
                        bg-card px-3 text-xs font-medium text-muted-foreground
                        transition-colors hover:border-primary/50 hover:text-foreground
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -92,8 +94,8 @@ import { AuthService } from '../../core/services/auth.service'
               </a>
             }
 
-            <!-- Theme picker -->
-            <div class="relative ml-2" #pickerRef>
+            <!-- Theme picker (always visible) -->
+            <div class="relative ml-1" #pickerRef>
               <button
                 type="button"
                 (click)="togglePicker()"
@@ -104,7 +106,6 @@ import { AuthService } from '../../core/services/auth.service'
                        hover:border-primary/50 hover:text-primary
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
-                <!-- Palette icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -119,7 +120,6 @@ import { AuthService } from '../../core/services/auth.service'
                 </svg>
               </button>
 
-              <!-- Dropdown panel -->
               @if (pickerOpen()) {
                 <div
                   role="dialog"
@@ -181,10 +181,132 @@ import { AuthService } from '../../core/services/auth.service'
               </ng-template>
             </div>
 
-          </div>
+            <!-- Hamburger: mobile only -->
+            <button
+              type="button"
+              (click)="toggleMenu()"
+              [attr.aria-expanded]="menuOpen()"
+              aria-label="Toggle navigation menu"
+              class="md:hidden flex h-8 w-8 items-center justify-center rounded-lg border border-border
+                     bg-card text-muted-foreground transition-colors duration-200
+                     hover:border-primary/50 hover:text-primary
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              @if (menuOpen()) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                </svg>
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="4" x2="20" y1="6" y2="6"/>
+                  <line x1="4" x2="20" y1="12" y2="12"/>
+                  <line x1="4" x2="20" y1="18" y2="18"/>
+                </svg>
+              }
+            </button>
 
+          </div>
         </nav>
       </div>
+
+      <!-- Mobile full-screen drawer -->
+      @if (menuOpen()) {
+        <div
+          class="mobile-drawer md:hidden absolute inset-x-0 top-0 h-screen flex flex-col"
+          style="background: hsl(var(--background));"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+        >
+          <!-- Drawer top bar -->
+          <div class="flex h-16 shrink-0 items-center justify-between px-4 sm:px-6 border-b border-border">
+            <a
+              routerLink="/"
+              (click)="closeMenu()"
+              class="font-mono text-lg font-bold text-primary hover:opacity-80 transition-opacity"
+              aria-label="Home"
+            >
+              &lt;CM /&gt;
+            </a>
+            <button
+              type="button"
+              (click)="closeMenu()"
+              aria-label="Close navigation menu"
+              class="flex h-9 w-9 items-center justify-center rounded-lg border border-border
+                     bg-card text-muted-foreground transition-colors
+                     hover:border-primary/50 hover:text-primary
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Nav links -->
+          <nav class="flex flex-1 flex-col justify-center px-8 sm:px-12" aria-label="Mobile navigation">
+            <ul class="flex flex-col" role="list">
+              @for (link of navLinks; track link.label) {
+                <li>
+                  <a
+                    [href]="link.href"
+                    (click)="closeMenu()"
+                    class="block border-b border-border/50 py-5 text-3xl font-bold
+                           text-foreground transition-colors hover:text-primary
+                           focus-visible:outline-none focus-visible:text-primary"
+                  >
+                    {{ link.label }}
+                  </a>
+                </li>
+              }
+            </ul>
+
+            <!-- Auth -->
+            <div class="mt-10">
+              @if (currentUser()) {
+                <button
+                  type="button"
+                  (click)="closeMenu(); logout()"
+                  class="flex items-center gap-2 rounded-lg border border-border
+                         bg-card px-5 py-3 text-sm font-medium text-muted-foreground
+                         transition-colors hover:border-primary/50 hover:text-foreground
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <span class="flex h-5 w-5 items-center justify-center rounded-full
+                               bg-primary text-[10px] font-bold text-primary-foreground">
+                    {{ currentUser()!.role === 'admin' ? 'A' : 'U' }}
+                  </span>
+                  Sign out
+                </button>
+              } @else {
+                <a
+                  routerLink="/login"
+                  (click)="closeMenu()"
+                  class="inline-flex items-center gap-2 rounded-lg border border-border
+                         bg-card px-5 py-3 text-sm font-medium text-muted-foreground
+                         transition-colors hover:border-primary/50 hover:text-foreground
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2"
+                       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                  Sign in
+                </a>
+              }
+            </div>
+          </nav>
+        </div>
+      }
+
     </header>
   `,
   styles: [`
@@ -198,6 +320,13 @@ import { AuthService } from '../../core/services/auth.service'
       border-bottom: 1px solid hsl(var(--border) / 0.7);
       box-shadow: 0 4px 24px hsl(var(--background) / 0.5);
     }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); }
+      to   { transform: translateX(0); }
+    }
+    .mobile-drawer {
+      animation: slideInRight 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    }
   `],
 })
 export class HeaderComponent {
@@ -208,9 +337,11 @@ export class HeaderComponent {
   readonly currentUser = this.authService.user
 
   @ViewChild('pickerRef') pickerRef!: ElementRef<HTMLElement>
+  @ViewChild('headerRef') headerRef!: ElementRef<HTMLElement>
 
   readonly scrolled   = signal(false)
   readonly pickerOpen = signal(false)
+  readonly menuOpen   = signal(false)
   readonly presets    = THEME_PRESETS
   readonly darkPresets  = THEME_PRESETS.filter(p => p.dark)
   readonly lightPresets = THEME_PRESETS.filter(p => !p.dark)
@@ -229,11 +360,21 @@ export class HeaderComponent {
 
   togglePicker(): void {
     this.pickerOpen.update(v => !v)
+    if (this.pickerOpen()) this.menuOpen.set(false)
   }
 
   selectPreset(id: string): void {
     this.themeService.setPreset(id)
     this.pickerOpen.set(false)
+  }
+
+  toggleMenu(): void {
+    this.menuOpen.update(v => !v)
+    if (this.menuOpen()) this.pickerOpen.set(false)
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(false)
   }
 
   @HostListener('window:scroll')
@@ -245,14 +386,18 @@ export class HeaderComponent {
 
   @HostListener('document:click', ['$event'])
   onDocClick(event: MouseEvent): void {
-    if (!this.pickerOpen()) return
-    if (!this.pickerRef.nativeElement.contains(event.target as Node)) {
+    const target = event.target as Node
+    if (this.pickerOpen() && !this.pickerRef.nativeElement.contains(target)) {
       this.pickerOpen.set(false)
+    }
+    if (this.menuOpen() && !this.headerRef.nativeElement.contains(target)) {
+      this.menuOpen.set(false)
     }
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.pickerOpen.set(false)
+    this.menuOpen.set(false)
   }
 }

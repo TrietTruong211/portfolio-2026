@@ -35,6 +35,7 @@
               { "glob": "**/*", "input": "public" }
             ],
             "styles": [
+              "node_modules/@angular/cdk/overlay-prebuilt.css",
               "node_modules/@fontsource/inter/400.css",
               "node_modules/@fontsource/inter/500.css",
               "node_modules/@fontsource/inter/700.css",
@@ -117,6 +118,7 @@
               { "glob": "**/*", "input": "public" }
             ],
             "styles": [
+              "node_modules/@angular/cdk/overlay-prebuilt.css",
               "node_modules/@fontsource/inter/400.css",
               "node_modules/@fontsource/inter/500.css",
               "node_modules/@fontsource/inter/700.css",

@@ -38,7 +38,7 @@ const PAGE_SIZE = 6
         </div>
       }
 
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-4 grid-cols-2 lg:grid-cols-3">
         @for (work of pagedItems(); track work.title) {
           <article
             class="group flex flex-col rounded-xl border border-border bg-card
@@ -138,7 +138,7 @@ const PAGE_SIZE = 6
             </div>
           </article>
         } @empty {
-          <p class="text-muted-foreground col-span-3">No works match this filter.</p>
+          <p class="text-muted-foreground col-span-full">No works match this filter.</p>
         }
       </div>
 

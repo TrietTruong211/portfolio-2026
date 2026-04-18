@@ -295,8 +295,8 @@ export class FooterComponent implements OnInit {
   form: ContactFormData = { name: '', email: '', message: '' }
 
   readonly socials = [
-    { label: 'GitHub',   href: 'https://github.com' },
-    { label: 'LinkedIn', href: 'https://linkedin.com' },
+    { label: 'GitHub',   href: 'https://github.com/TrietTruong211' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/triet-truong-minh-847971189' },
   ]
 
   async submit(): Promise<void> {

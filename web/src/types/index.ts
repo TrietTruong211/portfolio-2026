@@ -74,3 +74,11 @@ export type ApiUser = {
   id: string
   role: 'user' | 'admin'
 }
+
+export type ContactSubmission = {
+  id: string
+  name: string
+  email: string
+  message: string
+  createdAt: string
+}

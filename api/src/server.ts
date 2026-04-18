@@ -7,6 +7,7 @@ import { authRoutes } from './routes/auth.js'
 import { chatRoutes } from './routes/chat.js'
 import { documentRoutes } from './routes/documents.js'
 import { contactRoutes } from './routes/contact.js'
+import { adminRoutes } from './routes/admin.js'
 
 export async function buildServer() {
   const app = Fastify({
@@ -26,6 +27,7 @@ export async function buildServer() {
   await app.register(chatRoutes, { prefix: '/api' })
   await app.register(documentRoutes, { prefix: '/api' })
   await app.register(contactRoutes, { prefix: '/api' })
+  await app.register(adminRoutes, { prefix: '/api' })
 
   app.get('/health', async () => ({ status: 'ok', ts: Date.now() }))
 

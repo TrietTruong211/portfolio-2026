@@ -105,13 +105,13 @@ export class AdminComponent implements OnInit {
 
   private async loadSubmissions(): Promise<void> {
     try {
-      const data = await firstValueFrom(
-        this.http.get<ContactSubmission[]>(
+      const res = await firstValueFrom(
+        this.http.get<{ data: ContactSubmission[]; total: number; limit: number; offset: number }>(
           `${environment.apiUrl}/api/admin/contact-submissions`,
           { withCredentials: true }
         )
       )
-      this.submissions.set(data)
+      this.submissions.set(res.data)
     } catch {
       this.error.set('Failed to load submissions. Please try again.')
     } finally {

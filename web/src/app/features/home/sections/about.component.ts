@@ -30,14 +30,14 @@ import type { About } from '../../../../types/index'
             ></div>
 
             @if (item.imgUrl) {
-              <div class="flex h-12 w-12 items-center justify-center rounded-lg
+              <div class="flex w-full h-[160px] p-2 items-center justify-center rounded-lg
                           bg-primary/10 border border-primary/20">
                 <img
                   [ngSrc]="item.imgUrl"
                   [alt]="item.title"
                   width="28"
                   height="28"
-                  class="object-contain"
+                  class="object-contain w-full h-full"
                 />
               </div>
             }

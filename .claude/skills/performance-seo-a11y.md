@@ -258,12 +258,12 @@ export class HomeComponent implements OnInit {
     this.seo.injectJsonLd({
       '@context': 'https://schema.org',
       '@type': 'Person',
-      name: 'Your Name',
-      url: 'https://yourportfolio.com',
+      name: 'Triet Truong Minh',
+      url: 'http://trietportfolio.site',
       jobTitle: 'Full Stack Developer',
       sameAs: [
-        'https://github.com/yourhandle',
-        'https://linkedin.com/in/yourhandle',
+        'https://github.com/TrietTruong211',
+        'https://www.linkedin.com/in/triet-truong-minh-847971189',
       ],
     })
   }

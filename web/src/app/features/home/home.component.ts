@@ -66,10 +66,10 @@ const BRANDS_KEY        = makeStateKey<Brand[]>('home_brands')
       <app-skills [items]="skills()" />
       <app-works [items]="works()" />
       <app-experiences [items]="experiences()" />
-      <app-testimonials [items]="testimonials()" />
-      <app-brands [items]="brands()" />
     </div>
   `,
+      // <app-testimonials [items]="testimonials()" />
+      // <app-brands [items]="brands()" />
 })
 export class HomeComponent implements OnInit {
   private readonly seo         = inject(SeoService)

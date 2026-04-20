@@ -108,7 +108,6 @@ jobs:
                   'Id': origin_id,
                   'DomainName': api_domain,
                   'OriginPath': '',
-                  'OriginCustomHeaders': {'Quantity': 0, 'Items': []},
                   'ConnectionAttempts': 3,
                   'ConnectionTimeout': 10,
                   'CustomOriginConfig': {

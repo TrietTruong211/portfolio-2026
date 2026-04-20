@@ -19,9 +19,6 @@ web/test-results
 coverage/
 *.lcov
 
-# Angular
-web/.angular/
-
 # TypeScript
 *.tsbuildinfo
 

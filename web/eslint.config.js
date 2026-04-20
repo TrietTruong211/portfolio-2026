@@ -46,6 +46,7 @@ export default tseslint.config(
       },
     },
     rules: {
+      ...playwright.configs['flat/recommended'].rules,
       'playwright/no-networkidle': 'off',
     },
   },

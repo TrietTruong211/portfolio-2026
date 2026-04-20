@@ -12,7 +12,7 @@ export type SeoConfig = {
 }
 
 const SITE_NAME = 'Chris'
-const BASE_URL = 'https://www.trietportfolio.site/'
+const BASE_URL = 'https://www.trietportfolio.site'
 const DEFAULT_IMAGE = `${BASE_URL}/og-default.png`
 
 @Injectable({ providedIn: 'root' })

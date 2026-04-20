@@ -9,7 +9,6 @@ export async function proxyToAws(url: string, body: unknown): Promise<unknown> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 'x-api-key': process.env['AWS_API_KEY']!,
       },
       body: JSON.stringify(body),
       signal: controller.signal,

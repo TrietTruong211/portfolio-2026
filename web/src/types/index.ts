@@ -74,3 +74,24 @@ export type ApiUser = {
   id: string
   role: 'user' | 'admin'
 }
+
+export type ContactSubmission = {
+  id: string
+  name: string
+  email: string
+  message: string
+  createdAt: string
+}
+
+export type ChatMessage = {
+  role: 'user' | 'bot'
+  content: string
+  flagForHuman?: boolean
+  isError?: boolean
+}
+
+export type ChatApiResponse = {
+  reply: string
+  sessionId: string
+  flagForHuman?: boolean
+}

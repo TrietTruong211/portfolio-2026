@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/:prefix(auth|api)/:path*",
+      "destination": "https://portfolio-2026-uat.up.railway.app/:prefix/:path*"
+    }
+  ]
+}

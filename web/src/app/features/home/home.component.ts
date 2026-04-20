@@ -153,7 +153,7 @@ export class HomeComponent implements OnInit {
   }
 
   private applySeo(miscData: Miscellaneous | null): void {
-    const name = miscData?.name ?? 'Your Name'
+    const name = miscData?.name ?? 'Chris'
     this.seo.set({
       title: miscData?.title ?? 'Developer & Designer',
       description: `${name} — ${miscData?.title ?? 'Full Stack Developer'}. ${miscData?.greeting ?? ''}`.trim(),

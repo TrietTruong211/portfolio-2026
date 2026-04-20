@@ -102,7 +102,7 @@ type Tab = 'login' | 'register'
                 type="password"
                 required
                 minlength="8"
-                autocomplete="{{ tab() === 'login' ? 'current-password' : 'new-password' }}"
+                [autocomplete]="tab() === 'login' ? 'current-password' : 'new-password'"
                 placeholder="Min. 8 characters"
                 [(ngModel)]="form.password"
                 [disabled]="loading()"

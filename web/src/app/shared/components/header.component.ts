@@ -44,7 +44,8 @@ import { AuthService } from '../../core/services/auth.service'
               @for (link of navLinks; track link.label) {
                 <li>
                   <a
-                    [href]="link.href"
+                    routerLink="/"
+                    [fragment]="link.fragment"
                     class="relative px-3 py-2 text-sm font-medium text-muted-foreground
                            transition-colors duration-200 hover:text-foreground
                            focus-visible:outline-none focus-visible:ring-2
@@ -62,6 +63,23 @@ import { AuthService } from '../../core/services/auth.service'
 
             <!-- Desktop: Auth button -->
             @if (currentUser()) {
+              @if (currentUser()!.role === 'admin') {
+                <a
+                  routerLink="/admin"
+                  class="hidden md:flex h-8 items-center gap-1.5 rounded-lg border border-border
+                         bg-card px-3 text-xs font-medium text-muted-foreground
+                         transition-colors hover:border-primary/50 hover:text-foreground
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2"
+                       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/>
+                    <rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
+                  </svg>
+                  Dashboard
+                </a>
+              }
               <button
                 type="button"
                 (click)="logout()"
@@ -255,7 +273,8 @@ import { AuthService } from '../../core/services/auth.service'
               @for (link of navLinks; track link.label) {
                 <li>
                   <a
-                    [href]="link.href"
+                    routerLink="/"
+                    [fragment]="link.fragment"
                     (click)="closeMenu()"
                     class="block border-b border-border/50 py-5 text-3xl font-bold
                            text-foreground transition-colors hover:text-primary
@@ -268,8 +287,26 @@ import { AuthService } from '../../core/services/auth.service'
             </ul>
 
             <!-- Auth -->
-            <div class="mt-10">
+            <div class="mt-10 flex flex-col gap-3">
               @if (currentUser()) {
+                @if (currentUser()!.role === 'admin') {
+                  <a
+                    routerLink="/admin"
+                    (click)="closeMenu()"
+                    class="inline-flex items-center gap-2 rounded-lg border border-border
+                           bg-card px-5 py-3 text-sm font-medium text-muted-foreground
+                           transition-colors hover:border-primary/50 hover:text-foreground
+                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/>
+                      <rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
+                    </svg>
+                    Dashboard
+                  </a>
+                }
                 <button
                   type="button"
                   (click)="closeMenu(); logout()"
@@ -348,10 +385,10 @@ export class HeaderComponent {
   readonly activeId   = this.themeService.activePresetId
 
   readonly navLinks = [
-    { label: 'About',      href: '#about' },
-    { label: 'Works',      href: '#works' },
-    { label: 'Experience', href: '#experience' },
-    { label: 'Contact',    href: '#contact' },
+    { label: 'About',      fragment: 'about' },
+    { label: 'Works',      fragment: 'works' },
+    { label: 'Experience', fragment: 'experience' },
+    { label: 'Contact',    fragment: 'contact' },
   ]
 
   async logout(): Promise<void> {

@@ -10,8 +10,9 @@ export type ChatRequest = {
 }
 
 export type ChatResponse = {
-  reply: string
+  response: string
   sessionId: string
+  flagForHuman?: boolean
 }
 
 export type DocumentQueryRequest = {

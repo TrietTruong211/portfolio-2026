@@ -8,12 +8,13 @@ import { ThemeService } from './core/services/theme.service'
 import { AuthService } from './core/services/auth.service'
 import { HeaderComponent } from './shared/components/header.component'
 import { FooterComponent } from './shared/components/footer.component'
+import { ChatWidgetComponent } from './shared/components/chat-widget.component'
 
 @Component({
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, ChatWidgetComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

@@ -107,3 +107,7 @@
     background-size: 40px 40px;
   }
 }
+
+.cdk-visually-hidden {
+  @apply sr-only;
+}

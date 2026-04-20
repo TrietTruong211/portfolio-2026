@@ -45,6 +45,9 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      'playwright/no-networkidle': 'off',
+    },
   },
   {
     ignores: ['dist/**', '.angular/**', 'coverage/**', 'src/index.html', 'src/app/app.component.html'],

@@ -8,19 +8,19 @@ node_modules/
 .env.*.local
 
 # Build output
-apps/web/dist/
-apps/web/.angular/
-apps/api/dist/
+web/dist/
+web/.angular/
+api/dist/
 packages/*/dist/
 
 # Test artifacts
-apps/web/playwright-report/
-apps/web/test-results/
+web/playwright-report/
+web/test-results
 coverage/
 *.lcov
 
 # Angular
-apps/web/.angular/
+web/.angular/
 
 # TypeScript
 *.tsbuildinfo

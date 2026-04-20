@@ -172,8 +172,8 @@ export interface SeoConfig {
   noIndex?: boolean
 }
 
-const SITE_NAME = 'Your Name'
-const BASE_URL = 'https://yourportfolio.com'
+const SITE_NAME = 'Chris'
+const BASE_URL = 'https://www.trietportfolio.site/'
 const DEFAULT_IMAGE = `${BASE_URL}/og-default.png`
 
 @Injectable({ providedIn: 'root' })
@@ -279,7 +279,7 @@ this.seo.injectJsonLd({
   name: project.title,
   description: project.description,
   url: project.url,
-  author: { '@type': 'Person', name: 'Your Name' },
+  author: { '@type': 'Person', name: 'Chris' },
   programmingLanguage: project.techStack,
 })
 ```

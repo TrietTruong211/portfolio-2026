@@ -107,6 +107,10 @@ jobs:
               origins.append({
                   'Id': origin_id,
                   'DomainName': api_domain,
+                  'OriginPath': '',
+                  'OriginCustomHeaders': {'Quantity': 0, 'Items': []},
+                  'ConnectionAttempts': 3,
+                  'ConnectionTimeout': 10,
                   'CustomOriginConfig': {
                       'HTTPSPort': 443,
                       'HTTPPort': 80,
@@ -141,10 +145,16 @@ jobs:
                       'QueryString': True,
                       'Cookies': {'Forward': 'all'},
                       'Headers': {'Quantity': 0, 'Items': []},
+                      'QueryStringCacheKeys': {'Quantity': 0, 'Items': []},
                   },
                   'MinTTL': 0, 'DefaultTTL': 0, 'MaxTTL': 0,
                   'Compress': False,
+                  'SmoothStreaming': False,
+                  'FieldLevelEncryptionId': '',
                   'TrustedSigners': {'Enabled': False, 'Quantity': 0},
+                  'TrustedKeyGroups': {'Enabled': False, 'Quantity': 0, 'Items': []},
+                  'LambdaFunctionAssociations': {'Quantity': 0, 'Items': []},
+                  'FunctionAssociations': {'Quantity': 0, 'Items': []},
               })
               changed = True
 

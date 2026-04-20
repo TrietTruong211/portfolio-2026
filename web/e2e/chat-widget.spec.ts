@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test'
-import AxeBuilder from '@axe-core/playwright'
 
 test.describe('Chat widget', () => {
   test.beforeEach(async ({ page }) => {

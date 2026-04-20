@@ -56,7 +56,7 @@ export const chatRoutes: FastifyPluginAsync = async (app) => {
 
       const body = request.body as ChatRequest
 
-      request.log.info({ body: request.body }, 'chat request body')
+      request.log.debug({ hasSessionId: Boolean(body.sessionId), messageLength: body.message.length }, 'chat request')
 
       try {
         const raw = await proxyToAws(chatbotUrl, body)
@@ -66,7 +66,7 @@ export const chatRoutes: FastifyPluginAsync = async (app) => {
           return await reply.code(502).send({ error: 'Chat service unavailable' })
         }
 
-        request.log.info({ raw }, 'chat response from AWS chatbot')
+        request.log.debug({ sessionId: raw.sessionId, flagForHuman: raw.flagForHuman }, 'chat response from AWS chatbot')
         return await reply.send({
           reply: raw.response,
           sessionId: raw.sessionId,

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { firstValueFrom } from 'rxjs'
+import { firstValueFrom, timeout } from 'rxjs'
 import { environment } from '../../../environments/environment'
 import type { ChatMessage, ChatApiResponse } from '../../../types/index'
 
@@ -40,14 +40,13 @@ export class ChatService {
     this._messages.update(msgs => [...msgs, { role: 'user', content: trimmed }])
     this._isLoading.set(true)
 
-    console.log('Sending message to chat API:', trimmed)
-    console.log('Current session ID:', this.sessionId)
     try {
+      const REQUEST_TIMEOUT_MS = 15000
       const res = await firstValueFrom(
         this.http.post<ChatApiResponse>(`${environment.apiUrl}/api/chat`, {
           message: trimmed,
           ...(this.sessionId ? { sessionId: this.sessionId } : {}),
-        })
+        }).pipe(timeout(REQUEST_TIMEOUT_MS))
       )
       if (res.sessionId) this.sessionId = res.sessionId
       this._messages.update(msgs => [

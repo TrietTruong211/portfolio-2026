@@ -109,5 +109,5 @@
 }
 
 .cdk-visually-hidden {
-  display: none;
+  @apply sr-only;
 }

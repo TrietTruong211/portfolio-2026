@@ -111,7 +111,7 @@ jobs:
                       'HTTPSPort': 443,
                       'HTTPPort': 80,
                       'OriginProtocolPolicy': 'https-only',
-                      'OriginSSLProtocols': {'Quantity': 1, 'Items': ['TLSv1.2']},
+                      'OriginSslProtocols': {'Quantity': 1, 'Items': ['TLSv1.2']},
                   },
               })
               cfg['Origins']['Quantity'] = len(origins)

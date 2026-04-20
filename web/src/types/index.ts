@@ -82,3 +82,16 @@ export type ContactSubmission = {
   message: string
   createdAt: string
 }
+
+export type ChatMessage = {
+  role: 'user' | 'bot'
+  content: string
+  flagForHuman?: boolean
+  isError?: boolean
+}
+
+export type ChatApiResponse = {
+  reply: string
+  sessionId: string
+  flagForHuman?: boolean
+}

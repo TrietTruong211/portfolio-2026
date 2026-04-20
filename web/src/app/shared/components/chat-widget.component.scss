@@ -1,0 +1,41 @@
+@keyframes dot-bounce {
+  0%, 60%, 100% { transform: translateY(0);    opacity: 0.4; }
+  30%           { transform: translateY(-4px); opacity: 1;   }
+}
+
+.typing-dot {
+  display: inline-block;
+  animation: dot-bounce 1.2s infinite ease-in-out;
+
+  &:nth-child(2) { animation-delay: 160ms; }
+  &:nth-child(3) { animation-delay: 320ms; }
+}
+
+.chat-panel {
+  @apply fixed z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl;
+  bottom: 5.5rem;
+  right: 1.5rem;
+  width: 380px;
+  height: 520px;
+
+  @media (max-width: 480px) {
+    @apply inset-0 rounded-none;
+    width: 100%;
+    height: 100dvh;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+.chat-messages {
+  &::-webkit-scrollbar       { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 2px;
+  }
+}
+
+.starter-chip {
+  &:disabled { @apply pointer-events-none opacity-50; }
+}

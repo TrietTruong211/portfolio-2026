@@ -119,6 +119,7 @@ jobs:
 
           # --- behaviors ---
           behaviors     = cfg.setdefault('CacheBehaviors', {'Quantity': 0, 'Items': []})
+          behaviors.setdefault('Items', [])
           existing_paths = {b['PathPattern'] for b in behaviors['Items']}
           changed = False
 

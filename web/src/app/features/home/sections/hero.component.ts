@@ -36,7 +36,7 @@ import type { Miscellaneous } from '../../../../types/index'
 
             <h1 id="hero-heading" class="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
               <span class="block text-foreground">I'm</span>
-              <span class="block text-gradient mt-1">{{ data()?.name ?? 'Your Name' }}</span>
+              <span class="block text-gradient mt-1">{{ data()?.name ?? 'Chris' }}</span>
             </h1>
 
             <p class="mt-5 text-lg text-muted-foreground sm:text-xl max-w-md">

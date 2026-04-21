@@ -28,7 +28,7 @@ export const getWorks = (): Promise<Work[]> =>
       description,
       projectLink,
       codeLink,
-      tags,
+      "tags": coalesce(tags, []),
       "imgUrl": imgUrl.asset->url
     }`
   )

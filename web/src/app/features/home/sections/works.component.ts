@@ -46,15 +46,16 @@ const PAGE_SIZE = 6
             data-testid="work-card"
           >
             <!-- Image with hover overlay -->
-            @if (work.imgUrl) {
-              <div class="relative overflow-hidden h-48 flex items-center justify-center p-4"
-                   style="background: linear-gradient(135deg, hsl(220 30% 24%) 0%, hsl(220 30% 30%) 100%)">
+            <div class="relative overflow-hidden h-48 flex items-center justify-center p-4 bg-gradient-to-br from-primary/20 to-primary/5">
+              @if (work.imgUrl) {
                 <img
                   [src]="work.imgUrl"
                   [alt]="work.title + ' screenshot'"
                   class="max-w-full max-h-full w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
+              }
+              @if (work.projectLink || work.codeLink) {
                 <div class="absolute inset-0 flex items-center justify-center gap-4
                             bg-background/80 opacity-0 group-hover:opacity-100
                             transition-opacity duration-300">
@@ -97,8 +98,8 @@ const PAGE_SIZE = 6
                     </a>
                   }
                 </div>
-              </div>
-            }
+              }
+            </div>
 
             <div class="flex flex-1 flex-col gap-3 p-5">
               <h3 class="font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -117,24 +118,6 @@ const PAGE_SIZE = 6
                 }
               </div>
 
-              @if (!work.imgUrl) {
-                <div class="flex gap-3 pt-1">
-                  @if (work.projectLink) {
-                    <a [href]="work.projectLink" target="_blank" rel="noopener noreferrer"
-                       class="text-sm font-medium text-primary hover:underline underline-offset-4"
-                       [attr.aria-label]="'Visit ' + work.title + ' (opens in new tab)'">
-                      Live ↗
-                    </a>
-                  }
-                  @if (work.codeLink) {
-                    <a [href]="work.codeLink" target="_blank" rel="noopener noreferrer"
-                       class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                       [attr.aria-label]="'View source code for ' + work.title + ' (opens in new tab)'">
-                      Code
-                    </a>
-                  }
-                </div>
-              }
             </div>
           </article>
         } @empty {
@@ -223,7 +206,7 @@ export class WorksComponent {
   readonly allTags = computed(() => {
     const tags = new Set<string>()
     for (const work of this.items()) {
-      for (const tag of work.tags) tags.add(tag)
+      for (const tag of (work.tags ?? [])) tags.add(tag)
     }
     return ['All', ...tags]
   })
@@ -232,7 +215,7 @@ export class WorksComponent {
     const filter = this.activeFilter()
     return filter === 'All'
       ? this.items()
-      : this.items().filter(w => w.tags.includes(filter))
+      : this.items().filter(w => (w.tags ?? []).includes(filter))
   })
 
   readonly totalPages = computed(() =>

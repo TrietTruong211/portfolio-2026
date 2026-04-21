@@ -26,7 +26,7 @@ export type Work = {
   projectLink: string | null
   codeLink: string | null
   imgUrl: string | null
-  tags: string[]
+  tags: string[] | null
 }
 
 export type WorkExperienceItem = {

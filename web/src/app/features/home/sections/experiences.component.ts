@@ -124,8 +124,9 @@ export class ExperiencesComponent implements AfterViewInit, OnDestroy {
     this.tlEntries.changes.subscribe(() => { observeAll(); })
 
     this.scrollBound = (): void => {
-      const section = this.sectionEl.nativeElement
-      const line    = this.lineEl.nativeElement
+      if (!this.sectionEl?.nativeElement || !this.lineEl?.nativeElement) return
+      const section  = this.sectionEl.nativeElement
+      const line     = this.lineEl.nativeElement
       const rect     = section.getBoundingClientRect()
       const winH     = window.innerHeight
       const progress = Math.max(0, Math.min(1, (winH - rect.top) / (rect.height + winH)))

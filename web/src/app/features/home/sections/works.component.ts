@@ -215,7 +215,7 @@ export class WorksComponent {
     const filter = this.activeFilter()
     return filter === 'All'
       ? this.items()
-      : this.items().filter(w => (w.tags ?? []).includes(filter))
+      : this.items().filter(w => w.tags.includes(filter))
   })
 
   readonly totalPages = computed(() =>

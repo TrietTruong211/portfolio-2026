@@ -92,8 +92,8 @@ import type { Experience } from '../../../../types/index'
 export class ExperiencesComponent implements AfterViewInit, OnDestroy {
   readonly items = input<Experience[]>([])
 
-  @ViewChild('sectionEl') sectionEl!: ElementRef<HTMLElement>
-  @ViewChild('lineEl')    lineEl!:    ElementRef<HTMLElement>
+  @ViewChild('sectionEl') sectionEl?: ElementRef<HTMLElement>
+  @ViewChild('lineEl')    lineEl?:    ElementRef<HTMLElement>
   @ViewChildren('tlEntry') tlEntries!: QueryList<ElementRef<HTMLElement>>
 
   private readonly platformId = inject(PLATFORM_ID)

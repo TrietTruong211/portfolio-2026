@@ -206,7 +206,7 @@ export class WorksComponent {
   readonly allTags = computed(() => {
     const tags = new Set<string>()
     for (const work of this.items()) {
-      for (const tag of (work.tags ?? [])) tags.add(tag)
+      for (const tag of work.tags) tags.add(tag)
     }
     return ['All', ...tags]
   })

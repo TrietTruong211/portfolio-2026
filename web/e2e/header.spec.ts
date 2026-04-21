@@ -184,11 +184,11 @@ test.describe('Desktop — auth controls unauthenticated', () => {
   })
 
   test('does not show Dashboard link', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Dashboard' })).not.toBeVisible()
+    await expect(page.getByRole('link', { name: 'Dashboard' })).toBeHidden()
   })
 
   test('does not show Sign out button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'Sign out' })).not.toBeVisible()
+    await expect(page.getByRole('button', { name: 'Sign out' })).toBeHidden()
   })
 })
 
@@ -210,7 +210,7 @@ test.describe('Desktop — auth controls admin', () => {
   })
 
   test('does not show Sign in link', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Sign in' })).not.toBeVisible()
+    await expect(page.getByRole('link', { name: 'Sign in' })).toBeHidden()
   })
 
   test('Dashboard link navigates to /admin', async ({ page }) => {
@@ -232,7 +232,7 @@ test.describe('Desktop — auth controls regular user', () => {
   })
 
   test('does not show Dashboard link', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Dashboard' })).not.toBeVisible()
+    await expect(page.getByRole('link', { name: 'Dashboard' })).toBeHidden()
   })
 
   test('shows Sign out button', async ({ page }) => {

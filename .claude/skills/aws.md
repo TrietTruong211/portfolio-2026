@@ -251,3 +251,95 @@ AWS_REGION=ap-southeast-2
 AWS_ACCESS_KEY_ID=     # for S3 PutObject
 AWS_SECRET_ACCESS_KEY= # for S3 PutObject
 ```
+
+---
+
+## Terraform — CloudFront infrastructure (infra/)
+
+CloudFront is managed via Terraform in `infra/`. The Python boto3 approach was replaced because CloudFront's `update_distribution` API requires re-submitting the entire distribution config with many undocumented required fields, making incremental patching fragile.
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `infra/providers.tf` | AWS provider + S3 backend for Terraform state |
+| `infra/variables.tf` | Input variables (populated via `TF_VAR_*` in CI or `terraform.tfvars` locally) |
+| `infra/cloudfront.tf` | Full CloudFront distribution: S3 origin + Railway API origin, `/auth/*` and `/api/*` behaviors |
+| `infra/.gitignore` | Excludes `.terraform/`, `*.tfstate`, `*.tfvars`, `.terraform.lock.hcl` |
+| `infra/terraform.tfvars` | Local values (gitignored — never committed) |
+
+### Two S3 buckets
+
+- **App bucket** (`vars.S3_BUCKET`) — Angular static output, synced on every deploy with `--delete`
+- **State bucket** (`portfolio-2026-tfstate`) — Terraform state file only. Must be separate — the `--delete` sync would wipe the state file if they shared a bucket.
+
+### Variables required
+
+| Variable | Where to get it |
+|----------|----------------|
+| `api_origin_domain` | Railway API domain, no scheme (e.g. `portfolio-api.up.railway.app`) |
+| `s3_bucket_regional_domain` | S3 → bucket → Properties → regional domain (e.g. `bucket.s3.ap-southeast-2.amazonaws.com`) |
+| `s3_oac_id` | CloudFront → Origin access → OAC ID |
+| `acm_certificate_arn` | ACM → **us-east-1 region** → certificate ARN |
+| `domain_aliases` | JSON array, same as CloudFront alternate domain names (CNAMEs) |
+
+### GitHub Actions variables needed
+
+`API_ORIGIN_URL`, `S3_BUCKET_REGIONAL_DOMAIN`, `CLOUDFRONT_OAC_ID`, `ACM_CERTIFICATE_ARN`, `DOMAIN_ALIASES` (JSON array string e.g. `["yourdomain.com"]`)
+
+### IAM permissions required for the deploy user
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject", "s3:ListBucket"],
+      "Resource": [
+        "arn:aws:s3:::YOUR_APP_BUCKET",
+        "arn:aws:s3:::YOUR_APP_BUCKET/*",
+        "arn:aws:s3:::portfolio-2026-tfstate",
+        "arn:aws:s3:::portfolio-2026-tfstate/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:GetDistribution",
+        "cloudfront:GetDistributionConfig",
+        "cloudfront:UpdateDistribution",
+        "cloudfront:CreateInvalidation",
+        "cloudfront:ListTagsForResource"
+      ],
+      "Resource": "arn:aws:cloudfront::YOUR_ACCOUNT_ID:distribution/YOUR_DISTRIBUTION_ID"
+    }
+  ]
+}
+```
+
+### One-time import (run locally once)
+
+```powershell
+cd infra
+terraform init
+terraform import aws_cloudfront_distribution.portfolio YOUR_DISTRIBUTION_ID
+terraform plan   # review before first apply
+```
+
+### Local development
+
+Create `infra/terraform.tfvars` (gitignored) with real values — Terraform loads it automatically, no flags needed:
+
+```hcl
+api_origin_domain         = "your-api.up.railway.app"
+s3_bucket_regional_domain = "your-bucket.s3.ap-southeast-2.amazonaws.com"
+s3_oac_id                 = "YOUR_OAC_ID"
+acm_certificate_arn       = "arn:aws:acm:us-east-1:ACCOUNT:certificate/ID"
+domain_aliases            = ["yourdomain.com"]
+```
+
+### Tools required locally
+
+- Terraform >= 1.6 — installed to `C:\terraform`, on user PATH
+- AWS CLI v2 — configured via `aws configure` with the same credentials as GitHub secrets

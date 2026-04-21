@@ -81,90 +81,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-2
 
-      # Ensures /auth/* and /api/* CloudFront behaviors route to the Railway API origin.
-      # Idempotent — skips if the behaviors already exist.
-      # Requires vars.API_ORIGIN_URL = portfolio-2026-production-61de.up.railway.app (no scheme).
-      - name: Ensure CloudFront → Railway API behaviors
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.6"
+
+      - name: Terraform — apply CloudFront config
+        working-directory: ${{ github.workspace }}/infra
         env:
-          DIST_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
-          API_DOMAIN: ${{ vars.API_ORIGIN_URL }}
+          TF_VAR_api_origin_domain: ${{ vars.API_ORIGIN_URL }}
+          TF_VAR_s3_bucket_regional_domain: ${{ vars.S3_BUCKET_REGIONAL_DOMAIN }}
+          TF_VAR_s3_origin_id: ${{ vars.CLOUDFRONT_S3_ORIGIN_ID }}
+          TF_VAR_s3_oac_id: ${{ vars.CLOUDFRONT_OAC_ID }}
+          TF_VAR_web_acl_id: ${{ vars.WAF_WEB_ACL_ARN }}
+          TF_VAR_acm_certificate_arn: ${{ vars.ACM_CERTIFICATE_ARN }}
+          TF_VAR_domain_aliases: ${{ vars.DOMAIN_ALIASES }}
         run: |
-          python3 - <<'EOF'
-          import boto3, json, os, sys
-
-          dist_id   = os.environ['DIST_ID']
-          api_domain = os.environ['API_DOMAIN']
-          origin_id  = 'railway-api'
-
-          cf   = boto3.client('cloudfront')
-          resp = cf.get_distribution_config(Id=dist_id)
-          etag = resp['ETag']
-          cfg  = resp['DistributionConfig']
-
-          # --- origin ---
-          origins = cfg['Origins']['Items']
-          if not any(o['Id'] == origin_id for o in origins):
-              origins.append({
-                  'Id': origin_id,
-                  'DomainName': api_domain,
-                  'OriginPath': '',
-                  'ConnectionAttempts': 3,
-                  'ConnectionTimeout': 10,
-                  'CustomOriginConfig': {
-                      'HTTPSPort': 443,
-                      'HTTPPort': 80,
-                      'OriginProtocolPolicy': 'https-only',
-                      'OriginSslProtocols': {'Quantity': 1, 'Items': ['TLSv1.2']},
-                      'OriginReadTimeout': 30,
-                      'OriginKeepaliveTimeout': 5,
-                  },
-              })
-              cfg['Origins']['Quantity'] = len(origins)
-              cfg['Origins']['Items']    = origins
-
-          # --- behaviors ---
-          behaviors     = cfg.setdefault('CacheBehaviors', {'Quantity': 0, 'Items': []})
-          behaviors.setdefault('Items', [])
-          existing_paths = {b['PathPattern'] for b in behaviors['Items']}
-          changed = False
-
-          for path in ['/auth/*', '/api/*']:
-              if path in existing_paths:
-                  continue
-              behaviors['Items'].append({
-                  'PathPattern': path,
-                  'TargetOriginId': origin_id,
-                  'ViewerProtocolPolicy': 'https-only',
-                  'AllowedMethods': {
-                      'Quantity': 7,
-                      'Items': ['GET','HEAD','OPTIONS','PUT','PATCH','POST','DELETE'],
-                      'CachedMethods': {'Quantity': 2, 'Items': ['GET','HEAD']},
-                  },
-                  'ForwardedValues': {
-                      'QueryString': True,
-                      'Cookies': {'Forward': 'all'},
-                      'Headers': {'Quantity': 0, 'Items': []},
-                      'QueryStringCacheKeys': {'Quantity': 0, 'Items': []},
-                  },
-                  'MinTTL': 0, 'DefaultTTL': 0, 'MaxTTL': 0,
-                  'Compress': False,
-                  'SmoothStreaming': False,
-                  'FieldLevelEncryptionId': '',
-                  'TrustedSigners': {'Enabled': False, 'Quantity': 0},
-                  'TrustedKeyGroups': {'Enabled': False, 'Quantity': 0, 'Items': []},
-                  'LambdaFunctionAssociations': {'Quantity': 0, 'Items': []},
-                  'FunctionAssociations': {'Quantity': 0, 'Items': []},
-              })
-              changed = True
-
-          if not changed:
-              print('CloudFront behaviors already configured — nothing to do.')
-              sys.exit(0)
-
-          behaviors['Quantity'] = len(behaviors['Items'])
-          cf.update_distribution(DistributionConfig=cfg, Id=dist_id, IfMatch=etag)
-          print('CloudFront behaviors added successfully.')
-          EOF
+          terraform init
+          terraform apply -auto-approve
 
       # Hashed assets (JS/CSS/fonts/images) — immutable, 1-year cache
       - name: Sync immutable assets to S3
